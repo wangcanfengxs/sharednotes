@@ -5,7 +5,12 @@
 	$ git config --global user.name "Your Name"
 	$ git config --global user.email "email@example.com"
 
-表示你这台机器上**所有的Git仓库**都会使用这个配置
+表示你这台机器上**所有的Git仓库**都会使用这个配置（当前用户根目录下的.gitconfig）,如果只想对某一个项目生效，需要在项目的/.git/config文件中修改。
+
+	[user]
+    	name = Your Name
+   		email = your@email.com
+
 
 ##工作区和版本库
 
@@ -25,6 +30,10 @@
 	
 	git diff <file> //查看指定文件的修改内容
 	
+##远程仓库
+
+origin指向的就是你本地的代码库托管在远程Git仓库
+
 
 ##创建一个本地分支
 
@@ -52,6 +61,8 @@ origin指向的就是你本地的代码库托管在远程Git仓库
 	git branch -v 查看所有本地分支
 		（-v包含了最近提交的内容,-vv则会打印上游分支）
 	git branch -r 查看所有远程分支
+	
+	所有的分支都是本地的分支库备份，如果之前没有git-fetch，看不到别人刚刚提交的分支。
 	
 ##查看当前分支的状态
 
@@ -114,8 +125,49 @@ git pull --help的介绍：
 
 在Git中，用HEAD表示当前版本，上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100。
 
+##多人协作的工作模式
+
+>首先，可以试图用推送自己的修改；
+
+	git push origin local_branch_name
+
+>如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
 	
+	git pull
 	
+>如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令
+
+	git branch --set-upstream local_branch_name origin/remote_branch_name。
+
+>如果合并有冲突，则解决冲突，并在本地提交；
+
+>没有冲突或者解决掉冲突后，再用git-push推送就能成功！
+
+	git push origin branch-name
+	
+##标签的使用
+发布版本的时候，我们通常会在版本库中打一个标签（TAG）。标签相当于版本库的一个快照。
+实际上就是指向某个commit的指针，且不能移动，只能创建和删除。相当于commit_id的别名，方便归档。
+
+>创建Tag，用-a指定标签名，-m指定说明文字.还可以指定在某个commit上打标签，默认为HEAD
+	
+	git tag -a <tagname> -m "blablabla..." [HEAD|commit_id] 
+	
+>推送某个标签到远程，使用命令
+	
+	git push origin <tagname>	
+	
+>删除标签
+
+	git tag -d <tagname>
+
+>删除远程标签
+
+	git push origin :refs/tags/<tagname>
+	
+
+
+
 
 
 	 
